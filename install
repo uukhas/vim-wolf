@@ -1,0 +1,32 @@
+#!/bin/bash
+vimdir=$HOME/.vim
+[ ! -d $vimdir ] && echo "Error: $vimdir does not exist" 1>&2 && exit 1
+
+script=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+ftdir=$vimdir/ftdetect
+syndir=$vimdir/syntax
+
+while getopts ":v:h" opt; do
+    case $opt in
+        v) ver=$OPTARG;;
+        h) hl="True";;
+        \?) echo "Usage: install [-v version] [-h]" 1>&2 && exit 1;;
+        :) echo "Invalid option: $OPTARG requires an argument" 1>&2 && exit 1
+      ;;
+    esac
+done
+[ -z "$ver" ] && ver=7.0
+[ -z "$hl" ] && hl="False"
+
+[ ! -d $ftdir ] && echo "Creating $ftdir." && mkdir $ftdir
+cp $script/ftdetect/wolf.vim $ftdir
+
+[ ! -d $syndir ] && echo "Creating $syndir." && mkdir $syndir
+
+read -r -d '' code <<EOF
+AppendTo[\$Path, "$script"];
+Needs["Vimwolf\`"];
+Vimwolf\`SetVersion[$ver, $hl];
+EOF
+
+wolframscript -code "$code"

@@ -28,16 +28,12 @@ hi Keyword cterm=bold
 hi Structure cterm=bold ctermfg=DarkGreen
 hi Typedef cterm=italic ctermfg=Gray
 
+hi Special ctermfg=DarkCyan
 hi Tag cterm=underline ctermfg=Magenta
 hi Debug ctermfg=214
 
 hi Error ctermfg=242
 " Coloring end
-" Comments
-sy region wolfComment start='(\*'
-                    \ skip='@'
-                    \ end='\*)'
-hi def link wolfComment Comment
 " System start
 " System end
 hi def link wolfSysWordOld Keyword
@@ -58,10 +54,6 @@ sy match wolfSysCandy_
        \ contained
 hi def link wolfSysBrackets_ Keyword
 hi def link wolfSysCandy_ Keyword
-" Pure function arguments
-sy match wolfSlotSequence '#\{1,2\}'
-sy match wolfSlotSequence '#\{1,2\}[1-9][0-9]*'
-hi def link wolfSlotSequence Operator
 " Errors
 sy match wolfSlotSequenceError '#\{1,2\}0'
 hi def link wolfSlotSequenceError Error
@@ -100,9 +92,19 @@ sy region wolfSimpleBraces
         \ start='{'rs=s+1
         \ end='}'re=e-1
         \ contains=TOP
+" Pure function arguments
+sy match wolfSlotSequence '#\{1,2\}'
+sy match wolfSlotSequence '#\{1,2\}[1-9][0-9]*'
+sy match wolfPureEnd '&'
+hi def link wolfSlotSequence Special
+hi def link wolfPureEnd Special
 " Operators
-sy match wolfOperator '/;\|,\|;\|=\.\|=!=\|=\|:=\|->\|:>\|/\.\|//\.\|/@\|<>\|@@@\|@@\|&'
-sy match wolfOperator '<\|>\|!=\|==\|@\|?\|//\|\~\~\|!'
+sy match wolfOperator '/;\|;;\|=\.\|->\|:>\|/\.\|//\.\|{\|}'
+sy match wolfOperator '+\|-\|\*\*\|\*\|/\|^\|=\|:=\|/:'
+sy match wolfOperator '@@@\|@@\|@\|/@\|//\|\~\|\.\.\.\|\.\.\|,'
+sy match wolfOperator '\~\~\|?\|<>\||\|:'
+sy match wolfOperator '<\|<=\|>\|>=\|!=\|==\|&&\|||\|===\|=!=\|!'
+sy match wolfOperator '+=\|-=\|*=\|/=\|--\|++'
 hi def link wolfOperator Operator
 sy region wolfPart
         \ matchgroup=wolfPart_
@@ -193,4 +195,9 @@ hi def link wolfStructBrackets Structure
 " Float and integer number
 sy match wolfNumber '\d\+\.\?\d*'
 hi def link wolfNumber Number
+" Comments
+sy region wolfComment start='(\*'
+                    \ skip='@'
+                    \ end='\*)'
+hi def link wolfComment Comment
 let b:current_syntax = "wolf"

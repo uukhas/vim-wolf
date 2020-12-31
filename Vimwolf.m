@@ -20,7 +20,7 @@ BeginPackage@"Vimwolf`";
 Begin@"`Private`";
 
 Module[{names, data, pos, all, usage, sym, fun, newStr, symStr, funStr,
-   fileList, new, dir, part, noHL
+   fileList, new, dir, part, noHL, short
 },
 
 dir = DirectoryName@FindFile@$Input;
@@ -38,8 +38,15 @@ SetVersion[v:_Real|_Integer, hl:True|False] := (
    pos = Position[data, el_String /; ToExpression@el <= v];
    all = Extract[names, pos];
    new = Complement[names, all];
+   WriteString["stdout"~OutputStream~1, "Downloading usage information ..."];
    usage = WolframLanguageData[all, "PlaintextUsage"];
    sym = Extract[all, Position[usage, el_String /; StringFreeQ[el, "["]]];
+   WriteString["stdout"~OutputStream~1, " done.\n"];
+   short = WolframLanguageData[sym, "ShortNotations"];
+   short = DeleteCases[Extract[sym, Position[short, el:{__String}]],
+      "Degree"|"E"|"I"|"Infinity"|"Pi"
+   ];
+   sym = Complement[sym, short];
    fun = Complement[all, sym];
 
    newStr = StringJoin[StringJoin[

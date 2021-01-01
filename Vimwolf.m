@@ -31,7 +31,7 @@ WriteString["stdout"~OutputStream~1, "Downloading data ..."];
 data = WolframLanguageData[names, "FullVersionIntroduced"];
 WriteString["stdout"~OutputStream~1, " done.\n"];
 
-part[e:_, n:_Integer:7] := Partition[e, UpTo@n];
+part[e:_, n:_Integer:5] := Partition[e, UpTo@n];
 
 SetVersion[v:_Real|_Integer, hl:True|False] := (
    noHL = hl;
@@ -63,7 +63,7 @@ SetVersion[v:_Real|_Integer, hl:True|False] := (
       "sy keyword wolfSysFuncOld ",
       Riffle[#, " "],
       " nextgroup=wolfSysBrackets,wolfSysCandy_,wolfMessage\n"
-   ] &/@ part[fun, 5]];
+   ] &/@ part@fun];
 
    GetSyntax@FileNameJoin@{dir, "syntax", "wolf.vim"};
    SetSyntax@"~/.vim/syntax/wolf.vim";

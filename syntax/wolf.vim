@@ -39,9 +39,6 @@ hi Error ctermfg=242
 hi def link wolfSysWordOld Keyword
 hi def link wolfSysFuncOld Keyword
 hi def link wolfSysNew Debug
-sy match wolfGlobalVar
-       \ '$[A-Za-z0-9]\+'
-hi def link wolfGlobalVar Keyword
 sy region wolfSysBrackets
         \ matchgroup=wolfSysBrackets_
         \ start='\[\([^\[]\|$\)'rs=s+1,me=s
@@ -195,6 +192,10 @@ hi def link wolfStructBrackets Structure
 " Float and integer number
 sy match wolfNumber '\d\+\.\?\d*'
 hi def link wolfNumber Number
+" Global variable
+sy match wolfGlobalVar
+       \ '^?\$[A-Za-z0-9]\+'
+hi def link wolfGlobalVar Keyword
 " Comments
 sy region wolfComment start='(\*'
                     \ skip='@'

@@ -194,7 +194,7 @@ sy match wolfNumber '\d\+\.\?\d*'
 hi def link wolfNumber Number
 " Global variable
 sy match wolfGlobalVar
-       \ '^?\$[A-Za-z0-9]\+'
+       \ '\$[A-Za-z0-9]\+'
 hi def link wolfGlobalVar Keyword
 " Comments
 sy region wolfComment start='(\*'

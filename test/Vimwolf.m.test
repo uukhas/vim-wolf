@@ -1,0 +1,104 @@
+<span class="Comment">(*</span>
+<span class="Comment">    Copyright (C) 2020 Uladzimir Khasianevich</span>
+
+<span class="Comment">    This program is free software: you can redistribute it and/or modify</span>
+<span class="Comment">    it under the terms of the GNU General Public License as published by</span>
+<span class="Comment">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="Comment">    (at your option) any later version.</span>
+
+<span class="Comment">    This program is distributed in the hope that it will be useful,</span>
+<span class="Comment">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="Comment">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="Comment">    GNU General Public License for more details.</span>
+
+<span class="Comment">    You should have received a copy of the GNU General Public License</span>
+<span class="Comment">    along with this program.  If not, see &lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</span>
+<span class="Comment">*)</span>
+
+<span class="Keyword">BeginPackage</span><span class="Keyword">@</span><span class="String">&quot;Vimwolf`&quot;</span>;
+<span class="Statement">{</span><span class="Identifier">SetVersion</span><span class="Statement">,</span> <span class="Identifier">Symbols</span><span class="Statement">,</span> <span class="Identifier">Functions</span><span class="Statement">}</span>;
+<span class="Keyword">Begin</span><span class="Keyword">@</span><span class="String">&quot;`Private`&quot;</span>;
+
+<span class="Structure">Module</span><span class="Structure">[</span><span class="Statement">{</span><span class="Identifier">names</span><span class="Statement">,</span> <span class="Identifier">data</span><span class="Statement">,</span> <span class="Identifier">pos</span><span class="Statement">,</span> <span class="Identifier">all</span><span class="Statement">,</span> <span class="Identifier">usage</span><span class="Statement">,</span> <span class="Identifier">sym</span><span class="Statement">,</span> <span class="Identifier">fun</span><span class="Statement">,</span> <span class="Identifier">newStr</span><span class="Statement">,</span> <span class="Identifier">symStr</span><span class="Statement">,</span> <span class="Identifier">funStr</span><span class="Statement">,</span>
+   <span class="Identifier">fileList</span><span class="Statement">,</span> <span class="Identifier">new</span><span class="Statement">,</span> <span class="Identifier">dir</span><span class="Statement">,</span> <span class="Identifier">part</span><span class="Statement">,</span> <span class="Identifier">noHL</span><span class="Statement">,</span> <span class="Identifier">short</span>
+<span class="Statement">},</span>
+
+<span class="Identifier">dir</span> <span class="Statement">=</span> <span class="Keyword">DirectoryName</span><span class="Keyword">@</span><span class="Keyword">FindFile</span><span class="Keyword">@</span><span class="Keyword">$Input</span>;
+<span class="Identifier">names</span> <span class="Statement">=</span> <span class="Keyword">DeleteCases</span><span class="Keyword">[</span><span class="Keyword">Names</span><span class="Keyword">@</span><span class="String">&quot;System`*&quot;</span><span class="Statement">,</span><span class="String">&quot;Module&quot;</span><span class="Statement">|</span><span class="String">&quot;With&quot;</span><span class="Statement">|</span><span class="String">&quot;Block&quot;</span><span class="Keyword">]</span>;
+<span class="Identifier">names</span> <span class="Statement">=</span> <span class="Keyword">Select</span><span class="Keyword">[</span><span class="Identifier">names</span><span class="Statement">,</span> <span class="Keyword">StringMatchQ</span><span class="Keyword">[</span><span class="Special">#</span><span class="Statement">,</span> <span class="Keyword">RegularExpression</span><span class="Keyword">@</span><span class="String">&quot;[A-Z].*&quot;</span><span class="Keyword">]</span> <span class="Special">&amp;</span><span class="Keyword">]</span>;
+
+<span class="Keyword">WriteString</span><span class="Keyword">[</span><span class="String">&quot;stdout&quot;</span><span class="Statement">~</span><span class="Keyword">OutputStream</span><span class="Statement">~</span><span class="Constant">1</span><span class="Statement">,</span> <span class="String">&quot;Downloading data ...&quot;</span><span class="Keyword">]</span>;
+<span class="Identifier">data</span> <span class="Statement">=</span> <span class="Debug">WolframLanguageData</span>[<span class="Identifier">names</span><span class="Statement">,</span> <span class="String">&quot;FullVersionIntroduced&quot;</span>];
+<span class="Keyword">WriteString</span><span class="Keyword">[</span><span class="String">&quot;stdout&quot;</span><span class="Statement">~</span><span class="Keyword">OutputStream</span><span class="Statement">~</span><span class="Constant">1</span><span class="Statement">,</span> <span class="String">&quot; done.\n&quot;</span><span class="Keyword">]</span>;
+
+<span class="Function">part</span><span class="Function">[</span><span class="Identifier">e</span><span class="Statement">:</span><span class="Statement">_</span><span class="Statement">,</span> <span class="Identifier">n</span><span class="Statement">:</span><span class="Statement">_</span><span class="Statement">Integer</span><span class="Statement">:</span><span class="Constant">5</span><span class="Function">]</span> <span class="Statement">:=</span> <span class="Keyword">Partition</span><span class="Keyword">[</span><span class="Identifier">e</span><span class="Statement">,</span> <span class="Debug">UpTo</span><span class="Statement">@</span><span class="Identifier">n</span><span class="Keyword">]</span>;
+
+<span class="Function">SetVersion</span><span class="Function">[</span><span class="Identifier">v</span><span class="Statement">:</span><span class="Statement">_</span><span class="Statement">Real</span><span class="Statement">|</span><span class="Statement">_</span><span class="Statement">Integer</span><span class="Statement">,</span> <span class="Identifier">hl</span><span class="Statement">:</span><span class="Keyword">True</span><span class="Statement">|</span><span class="Keyword">False</span><span class="Function">]</span> <span class="Statement">:=</span> (
+   <span class="Identifier">noHL</span> <span class="Statement">=</span> <span class="Identifier">hl</span>;
+   <span class="Identifier">pos</span> <span class="Statement">=</span> <span class="Keyword">Position</span><span class="Keyword">[</span><span class="Identifier">data</span><span class="Statement">,</span> <span class="Identifier">el</span><span class="Statement">_</span><span class="Statement">String</span> <span class="Statement">/;</span> <span class="Keyword">ToExpression</span><span class="Keyword">@</span><span class="Identifier">el</span> <span class="Statement">&lt;=</span> <span class="Identifier">v</span><span class="Keyword">]</span>;
+   <span class="Identifier">all</span> <span class="Statement">=</span> <span class="Keyword">Extract</span><span class="Keyword">[</span><span class="Identifier">names</span><span class="Statement">,</span> <span class="Identifier">pos</span><span class="Keyword">]</span>;
+   <span class="Identifier">new</span> <span class="Statement">=</span> <span class="Keyword">Complement</span><span class="Keyword">[</span><span class="Identifier">names</span><span class="Statement">,</span> <span class="Identifier">all</span><span class="Keyword">]</span>;
+   <span class="Keyword">WriteString</span><span class="Keyword">[</span><span class="String">&quot;stdout&quot;</span><span class="Statement">~</span><span class="Keyword">OutputStream</span><span class="Statement">~</span><span class="Constant">1</span><span class="Statement">,</span> <span class="String">&quot;Downloading usage information ...&quot;</span><span class="Keyword">]</span>;
+   <span class="Identifier">usage</span> <span class="Statement">=</span> <span class="Debug">WolframLanguageData</span>[<span class="Identifier">all</span><span class="Statement">,</span> <span class="String">&quot;PlaintextUsage&quot;</span>];
+   <span class="Identifier">sym</span> <span class="Statement">=</span> <span class="Keyword">Extract</span><span class="Keyword">[</span><span class="Identifier">all</span><span class="Statement">,</span> <span class="Keyword">Position</span><span class="Keyword">[</span><span class="Identifier">usage</span><span class="Statement">,</span> <span class="Identifier">el</span><span class="Statement">_</span><span class="Statement">String</span> <span class="Statement">/;</span> <span class="Keyword">StringFreeQ</span><span class="Keyword">[</span><span class="Identifier">el</span><span class="Statement">,</span> <span class="String">&quot;[&quot;</span><span class="Keyword">]]]</span>;
+   <span class="Keyword">WriteString</span><span class="Keyword">[</span><span class="String">&quot;stdout&quot;</span><span class="Statement">~</span><span class="Keyword">OutputStream</span><span class="Statement">~</span><span class="Constant">1</span><span class="Statement">,</span> <span class="String">&quot; done.\n&quot;</span><span class="Keyword">]</span>;
+   <span class="Identifier">short</span> <span class="Statement">=</span> <span class="Debug">WolframLanguageData</span>[<span class="Identifier">sym</span><span class="Statement">,</span> <span class="String">&quot;ShortNotations&quot;</span>];
+   <span class="Identifier">short</span> <span class="Statement">=</span> <span class="Keyword">DeleteCases</span><span class="Keyword">[</span><span class="Keyword">Extract</span><span class="Keyword">[</span><span class="Identifier">sym</span><span class="Statement">,</span> <span class="Keyword">Position</span><span class="Keyword">[</span><span class="Identifier">short</span><span class="Statement">,</span> <span class="Identifier">el</span><span class="Statement">:{</span><span class="Statement">__</span><span class="Statement">String</span><span class="Statement">}</span><span class="Keyword">]]</span><span class="Statement">,</span>
+      <span class="String">&quot;Degree&quot;</span><span class="Statement">|</span><span class="String">&quot;E&quot;</span><span class="Statement">|</span><span class="String">&quot;I&quot;</span><span class="Statement">|</span><span class="String">&quot;Infinity&quot;</span><span class="Statement">|</span><span class="String">&quot;Pi&quot;</span>
+   <span class="Keyword">]</span>;
+   <span class="Identifier">sym</span> <span class="Statement">=</span> <span class="Keyword">Complement</span><span class="Keyword">[</span><span class="Identifier">sym</span><span class="Statement">,</span> <span class="Identifier">short</span><span class="Keyword">]</span>;
+   <span class="Identifier">fun</span> <span class="Statement">=</span> <span class="Keyword">Complement</span><span class="Keyword">[</span><span class="Identifier">all</span><span class="Statement">,</span> <span class="Identifier">sym</span><span class="Keyword">]</span>;
+
+   <span class="Identifier">newStr</span> <span class="Statement">=</span> <span class="Keyword">StringJoin</span><span class="Keyword">[</span><span class="Keyword">StringJoin</span><span class="Keyword">[</span>
+      <span class="String">&quot;sy keyword wolfSysNew &quot;</span><span class="Statement">,</span>
+      <span class="Keyword">Riffle</span><span class="Keyword">[</span><span class="Special">#</span><span class="Statement">,</span> <span class="String">&quot; &quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
+      <span class="String">&quot;\n&quot;</span>
+   <span class="Keyword">]</span> <span class="Special">&amp;</span><span class="Statement">/@</span> <span class="Function">part</span><span class="Function">@</span><span class="Identifier">new</span><span class="Keyword">]</span> <span class="Statement">&lt;&gt;</span> <span class="String">&quot;\n&quot;</span>;
+   <span class="Identifier">symStr</span> <span class="Statement">=</span> <span class="Keyword">StringJoin</span><span class="Keyword">[</span><span class="Keyword">StringJoin</span><span class="Keyword">[</span>
+      <span class="String">&quot;sy keyword wolfSysWordOld &quot;</span><span class="Statement">,</span>
+      <span class="Keyword">Riffle</span><span class="Keyword">[</span><span class="Special">#</span><span class="Statement">,</span> <span class="String">&quot; &quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
+      <span class="String">&quot;\n&quot;</span>
+   <span class="Keyword">]</span> <span class="Special">&amp;</span><span class="Statement">/@</span> <span class="Function">part</span><span class="Function">@</span><span class="Identifier">sym</span><span class="Keyword">]</span> <span class="Statement">&lt;&gt;</span> <span class="String">&quot;\n&quot;</span>;
+   <span class="Identifier">funStr</span> <span class="Statement">=</span> <span class="Keyword">StringJoin</span><span class="Keyword">[</span><span class="Keyword">StringJoin</span><span class="Keyword">[</span>
+      <span class="String">&quot;sy keyword wolfSysFuncOld &quot;</span><span class="Statement">,</span>
+      <span class="Keyword">Riffle</span><span class="Keyword">[</span><span class="Special">#</span><span class="Statement">,</span> <span class="String">&quot; &quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
+      <span class="String">&quot; nextgroup=wolfSysBrackets,wolfSysCandy_,wolfMessage\n&quot;</span>
+   <span class="Keyword">]</span> <span class="Special">&amp;</span><span class="Statement">/@</span> <span class="Function">part</span><span class="Function">@</span><span class="Identifier">fun</span><span class="Keyword">]</span>;
+
+   <span class="Function">GetSyntax</span><span class="Function">@</span><span class="Keyword">FileNameJoin</span><span class="Keyword">@</span><span class="Statement">{</span><span class="Identifier">dir</span><span class="Statement">,</span> <span class="String">&quot;syntax&quot;</span><span class="Statement">,</span> <span class="String">&quot;wolf.vim&quot;</span><span class="Statement">}</span>;
+   <span class="Function">SetSyntax</span><span class="Function">@</span><span class="String">&quot;~/.vim/syntax/wolf.vim&quot;</span>;
+
+);
+
+<span class="Function">GetSyntax</span><span class="Function">[</span><span class="Identifier">file</span><span class="Statement">_</span><span class="Function">]</span> <span class="Statement">:=</span> <span class="Structure">Module</span><span class="Structure">[</span><span class="Statement">{</span><span class="Identifier">keep</span> <span class="Statement">=</span> <span class="Keyword">True</span><span class="Statement">},</span>
+   <span class="Identifier">fileList</span> <span class="Statement">=</span> <span class="Statement">{}</span>;
+   <span class="Keyword">While</span><span class="Keyword">[</span>(<span class="Identifier">line</span> <span class="Statement">=</span> <span class="Debug">ReadLine</span>[<span class="Identifier">file</span>]) <span class="Statement">=!=</span> <span class="Keyword">EndOfFile</span><span class="Statement">,</span>
+      <span class="Keyword">If</span><span class="Keyword">[</span><span class="Identifier">noHL</span><span class="Statement">,</span>
+         <span class="Keyword">If</span><span class="Keyword">[</span><span class="Keyword">MatchQ</span><span class="Keyword">[</span><span class="Identifier">line</span><span class="Statement">,</span> <span class="String">&quot;\&quot; Coloring start&quot;</span><span class="Keyword">]</span><span class="Statement">,</span> <span class="Identifier">keep</span> <span class="Statement">=</span> <span class="Keyword">False</span>;<span class="Keyword">]</span>;
+         <span class="Keyword">If</span><span class="Keyword">[</span><span class="Keyword">MatchQ</span><span class="Keyword">[</span><span class="Identifier">line</span><span class="Statement">,</span> <span class="String">&quot;\&quot; Coloring end&quot;</span><span class="Keyword">]</span><span class="Statement">,</span> <span class="Identifier">keep</span> <span class="Statement">=</span> <span class="Keyword">True</span>; <span class="Identifier">line</span><span class="Statement">=</span><span class="String">&quot;&quot;</span>;<span class="Keyword">]</span>;
+      <span class="Keyword">]</span>;
+      <span class="Keyword">If</span><span class="Keyword">[</span><span class="Keyword">MatchQ</span><span class="Keyword">[</span><span class="Identifier">line</span><span class="Statement">,</span> <span class="String">&quot;\&quot; System start&quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
+         <span class="Identifier">keep</span> <span class="Statement">=</span> <span class="Keyword">False</span>;
+         <span class="Keyword">AppendTo</span><span class="Keyword">[</span><span class="Identifier">fileList</span><span class="Statement">,</span> <span class="Identifier">line</span> <span class="Statement">&lt;&gt;</span> <span class="String">&quot;\n&quot;</span> <span class="Statement">&lt;&gt;</span> <span class="Identifier">newStr</span> <span class="Statement">&lt;&gt;</span> <span class="Identifier">symStr</span> <span class="Statement">&lt;&gt;</span> <span class="Identifier">funStr</span><span class="Keyword">]</span>
+      <span class="Keyword">]</span>;
+      <span class="Keyword">If</span><span class="Keyword">[</span><span class="Keyword">MatchQ</span><span class="Keyword">[</span><span class="Identifier">line</span><span class="Statement">,</span> <span class="String">&quot;\&quot; System end&quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
+         <span class="Identifier">keep</span> <span class="Statement">=</span> <span class="Keyword">True</span>;
+      <span class="Keyword">]</span>;
+      <span class="Keyword">If</span><span class="Keyword">[</span><span class="Identifier">keep</span><span class="Statement">,</span> <span class="Keyword">AppendTo</span><span class="Keyword">[</span><span class="Identifier">fileList</span><span class="Statement">,</span> <span class="Identifier">line</span><span class="Keyword">]]</span>
+   <span class="Keyword">]</span>;
+   <span class="Keyword">Close</span><span class="Keyword">@</span><span class="Identifier">file</span>;
+<span class="Structure">]</span>;
+
+<span class="Function">SetSyntax</span><span class="Function">[</span><span class="Identifier">file</span><span class="Statement">_</span><span class="Function">]</span> <span class="Statement">:=</span> <span class="Structure">Module</span><span class="Structure">[</span><span class="Statement">{</span><span class="Identifier">obj</span><span class="Statement">},</span>
+   <span class="Keyword">If</span><span class="Keyword">[</span><span class="Keyword">FileExistsQ</span><span class="Keyword">@</span><span class="Identifier">file</span><span class="Statement">,</span> <span class="Keyword">DeleteFile</span><span class="Keyword">@</span><span class="Identifier">file</span><span class="Keyword">]</span>;
+   <span class="Identifier">obj</span> <span class="Statement">=</span> <span class="Keyword">OpenWrite</span><span class="Keyword">@</span><span class="Identifier">file</span>;
+   <span class="Debug">WriteLine</span>[<span class="Identifier">obj</span><span class="Statement">,</span> <span class="Keyword">StringJoin</span><span class="Keyword">@</span><span class="Keyword">Riffle</span><span class="Keyword">[</span><span class="Identifier">fileList</span><span class="Statement">,</span> <span class="String">&quot;\n&quot;</span><span class="Keyword">]</span>];
+   <span class="Keyword">Close</span><span class="Keyword">@</span><span class="Identifier">obj</span>;
+   <span class="Keyword">Quit</span><span class="Keyword">[</span><span class="Constant">0</span><span class="Keyword">]</span>;
+<span class="Structure">]</span>;
+
+];
+
+<span class="Keyword">End</span><span class="Keyword">[]</span>;
+<span class="Keyword">EndPackage</span><span class="Keyword">[]</span>;
+<span class="Keyword">$ContextPath</span> <span class="Statement">=</span> <span class="Keyword">DeleteCases</span><span class="Keyword">[</span><span class="Keyword">$ContextPath</span><span class="Statement">,</span> <span class="String">&quot;Vimwolf`&quot;</span><span class="Keyword">]</span>;

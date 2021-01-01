@@ -47,3 +47,21 @@ can be used simultaneously):
    undesired. To use your highlighting::
 
       ./install -n
+
+Testing
+-------
+
+In order to test, run::
+
+   ./check
+
+It will create ``.html`` files and check them against the ``.test`` ones. The
+last ones are created in exactly the same way, how in ``check`` script.
+
+* [-f] "full test"
+   This flag forces to use ``install`` script first. Testing is done in
+   the following way::
+
+      ./check -f
+
+

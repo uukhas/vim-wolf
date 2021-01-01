@@ -99,8 +99,8 @@ sy match wolfPureEnd '&'
 hi def link wolfSlotSequence Special
 hi def link wolfPureEnd Special
 " Operators
-sy match wolfOperator '/;\|;;\|=\.\|->\|:>\|/\.\|//\.\|{\|}'
 sy match wolfOperator '+\|-\|\*\*\|\*\|/\|^\|=\|:=\|/:'
+sy match wolfOperator '/;\|;;\|=\.\|->\|:>\|/\.\|//\.\|{\|}'
 sy match wolfOperator '@@@\|@@\|@\|/@\|//\|\~\|\.\.\.\|\.\.\|,'
 sy match wolfOperator '\~\~\|?\|<>\||\|:'
 sy match wolfOperator '<\|<=\|>\|>=\|!=\|==\|&&\|||\|===\|=!=\|!'

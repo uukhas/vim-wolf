@@ -46,7 +46,7 @@ can be used simultaneously):
    Some colors are defined in this syntax. They are author specific and may be
    undesired. To use your highlighting::
 
-      ./install -n
+      ./install -h
 
 Testing
 -------

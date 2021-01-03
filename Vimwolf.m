@@ -1,5 +1,5 @@
 (*
-    Copyright (C) 2020 Uladzimir Khasianevich
+    Copyright (C) 2020-2021 Uladzimir Khasianevich
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

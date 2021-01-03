@@ -12,7 +12,7 @@ done
 cp $script/Vimwolf.m $script/test/Vimwolf.m
 
 for f in $script/test/*.m; do
-   vim +"syn on" +"set nonu" +"run! syntax/2html.vim" +"wq" +"q" $f
+   vim -N -u NONE +"syn on" +"run! plugin/tohtml.vim" +"run! syntax/2html.vim" +"wq" +"q" $f
    sed -i -e '0,/<pre/d' -e '/<\/pre/,$d' $f.html
    diff -U 0 $f.test $f.html > $f.diff
 done

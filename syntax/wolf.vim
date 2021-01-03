@@ -1,6 +1,6 @@
 " Vim syntax file
 " Language: Mathematica
-" Copyright (C) 2020 Uladzimir Khasianevich
+" Copyright (C) 2020-2021 Uladzimir Khasianevich
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -197,8 +197,9 @@ sy match wolfGlobalVar
        \ '\$[A-Za-z0-9]\+'
 hi def link wolfGlobalVar Keyword
 " Comments
-sy region wolfComment start='(\*'
-                    \ skip='@'
-                    \ end='\*)'
+sy region wolfComment
+        \ start='(\*'
+        \ skip='@'
+        \ end='\*)'
 hi def link wolfComment Comment
 let b:current_syntax = "wolf"

@@ -62,7 +62,7 @@ SetVersion[v:_Real|_Integer, hl:True|False] := (
    funStr = StringJoin[StringJoin[
       "sy keyword wolfSysFuncOld ",
       Riffle[#, " "],
-      " nextgroup=wolfSysBrackets,wolfSysCandy_,wolfMessage\n"
+      " nextgroup=@wolfCluSysFunc\n"
    ] &/@ part@fun];
 
    GetSyntax@FileNameJoin@{dir, "syntax", "wolf.vim"};

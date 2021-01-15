@@ -62,7 +62,7 @@
    <span class="Identifier">funStr</span> <span class="Statement">=</span> <span class="Keyword">StringJoin</span><span class="Keyword">[</span><span class="Keyword">StringJoin</span><span class="Keyword">[</span>
       <span class="String">&quot;sy keyword wolfSysFuncOld &quot;</span><span class="Statement">,</span>
       <span class="Keyword">Riffle</span><span class="Keyword">[</span><span class="Special">#</span><span class="Statement">,</span> <span class="String">&quot; &quot;</span><span class="Keyword">]</span><span class="Statement">,</span>
-      <span class="String">&quot; nextgroup=wolfSysBrackets,wolfSysCandy_,wolfMessage\n&quot;</span>
+      <span class="String">&quot; nextgroup=</span><span class="Tag">@wolfCluSysFunc</span><span class="String">\n&quot;</span>
    <span class="Keyword">]</span> <span class="Special">&amp;</span><span class="Statement">/@</span> <span class="Function">part</span><span class="Function">@</span><span class="Identifier">fun</span><span class="Keyword">]</span>;
 
    <span class="Function">GetSyntax</span><span class="Function">@</span><span class="Keyword">FileNameJoin</span><span class="Keyword">@</span><span class="Statement">{</span><span class="Identifier">dir</span><span class="Statement">,</span> <span class="String">&quot;syntax&quot;</span><span class="Statement">,</span> <span class="String">&quot;wolf.vim&quot;</span><span class="Statement">}</span>;

@@ -34,6 +34,7 @@ hi Debug ctermfg=214
 
 hi Error ctermfg=242
 " Coloring end
+sy cluster wolfCluSysFunc contains=wolfSysBrackets,wolfSysCandy_,wolfMessage
 " System start
 " System end
 hi def link wolfSysWordOld Keyword

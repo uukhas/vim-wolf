@@ -163,7 +163,7 @@ sy match wolfFunctionCandy_
        \ '@\{1,3\}'
        \ contained
 sy match wolfFunction
-       \ '[A-Za-z0-9]\+\s*\['me=e-1,he=e-1
+       \ '[A-Za-z0-9]\+\s*\[[^\[]'me=e-2,he=e-2
        \ nextgroup=wolfFunctionBody_
 sy region wolfFunctionBody_
         \ matchgroup=wolfFunctionBrackets_

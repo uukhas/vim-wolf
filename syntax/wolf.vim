@@ -166,6 +166,9 @@ sy match wolfFunctionCandy_
 sy match wolfFunction
        \ '[A-Za-z0-9]\+\s*\[[^\[]'me=e-2,he=e-2
        \ nextgroup=wolfFunctionBody_
+sy match wolfFunction
+       \ '[A-Za-z0-9]\+\s*\[$'me=e-1,he=e-1
+       \ nextgroup=wolfFunctionBody_
 sy region wolfFunctionBody_
         \ matchgroup=wolfFunctionBrackets_
         \ start='\[\([^\[]\|$\)'rs=s+1,me=s

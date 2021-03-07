@@ -5,6 +5,8 @@
 if exists("b:current_syntax")
   finish
 endif
+" Making better synchronization
+syn sync minlines=30
 " Coloring start
 hi String ctermfg=Magenta
 

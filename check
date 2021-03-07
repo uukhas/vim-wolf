@@ -1,4 +1,7 @@
 #!/bin/bash
+# Author: Uladzimir Khasianevich
+# License: MIT License
+
 script=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
 while getopts ":f" opt; do
@@ -12,7 +15,8 @@ done
 cp $script/Vimwolf.m $script/test/Vimwolf.m
 
 for f in $script/test/*.m; do
-   vim -N -u NONE +"syn on" +"run! plugin/tohtml.vim" +"run! syntax/2html.vim" +"wq" +"q" $f
+   vim -N -u NONE +"syn on" +"run! plugin/tohtml.vim" \
+       +"run! syntax/2html.vim" +"wq" +"q" $f
    sed -i -e '0,/<pre/d' -e '/<\/pre/,$d' $f.html
    diff -U 0 $f.test $f.html > $f.diff
 done
@@ -20,6 +24,7 @@ done
 err=0
 for f in $script/test/*.diff; do
    echo -n "Checking $f ... "
-   [ -z "$(cat $f)" ] && echo -e "\e[32mok\e[39m" || { echo -e "\e[31merror\e[39m"; ((err++)); }
+   [ -z "$(cat $f)" ] && echo -e "\e[32mok\e[39m" \
+                      || { echo -e "\e[31merror\e[39m"; ((err++)); }
 done
    [ $err -eq 0 ] || exit 1

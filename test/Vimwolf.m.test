@@ -83,7 +83,7 @@
    <span class="Keyword">Quit</span><span class="Keyword">[</span><span class="Constant">0</span><span class="Keyword">]</span>;
 <span class="Structure">]</span>;
 
-];
+<span class="Structure">]</span>;
 
 <span class="Keyword">End</span><span class="Keyword">[]</span>;
 <span class="Keyword">EndPackage</span><span class="Keyword">[]</span>;

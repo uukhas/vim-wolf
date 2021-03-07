@@ -4,27 +4,35 @@
 
 script=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
-while getopts ":f" opt; do
-    case $opt in
+while getopts ":a:f" opt; do
+    case ${opt} in
+        a) new=${OPTARG}
+           [ -f ${new} ] || { echo "${new} doesn't exist!"; exit 1; }
+           [ ${new: -2} == ".m" ] || { echo "${new} isn't a .m file!"; exit 1; }
+           cp ${new} ${script}/test/
+           new=$(basename ${new});;
         f) full="yes";;
-        \?) echo "Usage: check [-f]" 1>&2 && exit 1;;
+        \?) echo "Usage: check [-f] [-a <path/to/file.m>]" 1>&2 && exit 1;;
     esac
 done
-[ ! -z $full ] && $script/install
+[ -z ${full} ] || ${script}/install
 
-cp $script/Vimwolf.m $script/test/Vimwolf.m
+cp ${script}/Vimwolf.m ${script}/test/
 
-for f in $script/test/*.m; do
+for f in ${script}/test/*.m; do
    vim -N -u NONE +"syn on" +"run! plugin/tohtml.vim" \
-       +"run! syntax/2html.vim" +"wq" +"q" $f
-   sed -i -e '0,/<pre/d' -e '/<\/pre/,$d' $f.html
-   diff -U 0 $f.test $f.html > $f.diff
+       +"run! syntax/2html.vim" +"wq" +"q" ${f}
+   sed -i -e '0,/<pre/d' -e '/<\/pre/,$d' ${f}.html
+   [ ${f} == ${script}/test/${new} ] && {
+      echo "Making test/${new}.test"
+      cp ${f}.html ${f}.test; }
+   diff -U 0 ${f}.test ${f}.html > ${f}.diff
 done
 
 err=0
-for f in $script/test/*.diff; do
-   echo -n "Checking $f ... "
-   [ -z "$(cat $f)" ] && echo -e "\e[32mok\e[39m" \
+for f in ${script}/test/*.diff; do
+   echo -n "Checking ${f} ... "
+   [ -z "$(cat ${f})" ] && echo -e "\e[32mok\e[39m" \
                       || { echo -e "\e[31merror\e[39m"; ((err++)); }
 done
-   [ $err -eq 0 ] || exit 1
+   [ ${err} -eq 0 ] || exit 1

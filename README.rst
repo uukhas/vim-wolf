@@ -5,7 +5,7 @@ VIM-WOLF
 The syntax file for Mathematica language for Vim.
 
 Note
-----
+====
 
 This syntax is made (and is under slow construction) in order to meet some
 author requirements for the development of other things, so it will be slowly
@@ -13,7 +13,7 @@ evolving towards some unspecified unpredictable wishes of the author, which may
 and will be varying over time.
 
 Features
---------
+========
 
 * Mathematica version specific keywords:
    This allows to separate "older" and "newer" ``System`` symbols with respect
@@ -26,7 +26,7 @@ Features
    make context names almost invisible.
 
 Installation
-------------
+============
 
 In order to install, run::
 
@@ -49,7 +49,7 @@ can be used simultaneously):
       ./install -h
 
 Testing
--------
+=======
 
 In order to test, run::
 
@@ -64,4 +64,8 @@ last ones are created in exactly the same way, how in ``check`` script.
 
       ./check -f
 
+* [-a <path/to/file.m>] "add test"
+   This flag copies ``file.m`` to ``test/`` directory and generates
+   a new ``.m.test`` file::
 
+      ./check -a <path/to/file.m>

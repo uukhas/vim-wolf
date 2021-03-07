@@ -1,5 +1,5 @@
 ========
-VIM.WOLF
+VIM-WOLF
 ========
 
 The syntax file for Mathematica language for Vim.

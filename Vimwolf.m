@@ -17,7 +17,7 @@ WriteString["stdout"~OutputStream~1, "Downloading data ..."];
 data = WolframLanguageData[names, "FullVersionIntroduced"];
 WriteString["stdout"~OutputStream~1, " done.\n"];
 
-part[e:_, n:_Integer:5] := Partition[e, UpTo@n];
+part[e:_, n:_Integer:4] := Partition[e, UpTo@n];
 
 SetVersion[v:_Real|_Integer, hl:True|False] := (
    noHL = hl;

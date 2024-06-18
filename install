@@ -32,4 +32,4 @@ Needs["Vimwolf\`"];
 Vimwolf\`SetVersion[$ver, $hl];
 EOF
 
-wolframscript -code "$code"
+/usr/local/Wolfram/Mathematica/13.3/Executables/wolframscript -code "$code"

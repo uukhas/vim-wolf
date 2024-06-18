@@ -5,56 +5,83 @@ BeginPackage@"Vimwolf`";
 {SetVersion, Symbols, Functions};
 Begin@"`Private`";
 
-Module[{names, data, pos, all, usage, sym, fun, newStr, symStr, funStr,
-   fileList, new, dir, part, noHL, short
-},
+removeMissing[{names_, data_}] := Module[
+   {missingPositions},
+   WriteString["stdout"~OutputStream~1, "   Removing missing entries ..."];
+   missingPositions = Position[data, Missing[__]];
+   WriteString["stdout"~OutputStream~1, " done.\n"];
+   {Delete[names, missingPositions], Delete[data, missingPositions]}
+];
+
+getKnownSymbols[knownNames_] := Module[
+   {usageStrings, namesWithUsage},
+   WriteString["stdout"~OutputStream~1, "Downloading usage information:\n"];
+   Block[{WriteString},
+      usageStrings = WolframLanguageData[knownNames, "PlaintextUsage"];
+   ];
+   {namesWithUsage, usageStrings} = removeMissing@{knownNames, usageStrings};
+   Extract[namesWithUsage, Position[usageStrings, el_String /; StringFreeQ[el, "["]]]
+];
+
+getUndesiredSymbols[knownSymbols_] := Module[
+   {shortNotations, undesiredSymbols},
+   WriteString["stdout"~OutputStream~1, "Getting undesired symbols:\n"];
+   Block[{WriteString},
+      shortNotations = WolframLanguageData[knownSymbols, "ShortNotations"];
+   ];
+   {undesiredSymbols, shortNotations} = removeMissing@{knownSymbols, shortNotations};
+   DeleteCases[undesiredSymbols, "Degree" | "E" | "I" | "Infinity" | "Pi"]
+];
+
+Module[{names, data, newStr, symStr, funStr, fileList, dir, part, noHL, short},
 
 dir = DirectoryName@FindFile@$Input;
 names = DeleteCases[Names@"System`*","Module"|"With"|"Block"];
 names = Select[names, StringMatchQ[#, RegularExpression@"[A-Z].*"] &];
 
 WriteString["stdout"~OutputStream~1, "Downloading data ..."];
-data = WolframLanguageData[names, "FullVersionIntroduced"];
+Block[{WriteString},
+   data = WolframLanguageData[names, "FullVersionIntroduced"];
+];
 WriteString["stdout"~OutputStream~1, " done.\n"];
+{names, data} = removeMissing@{names, data};
 
-part[e:_, n:_Integer:4] := Partition[e, UpTo@n];
+part[e:_, n:_Integer:1] := Partition[e, UpTo@n];
 
-SetVersion[v:_Real|_Integer, hl:True|False] := (
+SetVersion[v:_Real|_Integer, hl:True|False] := Module[
+   {knownPos, knownNames, newerNames, knownSymbols, undesiredSymbols, knownFunctions},
    noHL = hl;
-   pos = Position[data, el_String /; ToExpression@el <= v];
-   all = Extract[names, pos];
-   new = Complement[names, all];
-   WriteString["stdout"~OutputStream~1, "Downloading usage information ..."];
-   usage = WolframLanguageData[all, "PlaintextUsage"];
-   sym = Extract[all, Position[usage, el_String /; StringFreeQ[el, "["]]];
-   WriteString["stdout"~OutputStream~1, " done.\n"];
-   short = WolframLanguageData[sym, "ShortNotations"];
-   short = DeleteCases[Extract[sym, Position[short, el:{__String}]],
-      "Degree"|"E"|"I"|"Infinity"|"Pi"
-   ];
-   sym = Complement[sym, short];
-   fun = Complement[all, sym];
+   knownPos = Position[data, el_String /; ToExpression@el <= v];
+   knownNames = Extract[names, knownPos];
+   newerNames = Complement[names, knownNames];
+
+   knownSymbols = getKnownSymbols[knownNames];
+   undesiredSymbols = getUndesiredSymbols[knownSymbols];
+   knownSymbols = Complement[knownSymbols, undesiredSymbols];
+   knownFunctions = Complement[knownNames, knownSymbols];
 
    newStr = StringJoin[StringJoin[
       "sy keyword wolfSysNew ",
       Riffle[#, " "],
       "\n"
-   ] &/@ part@new] <> "\n";
+   ] &/@ part@newerNames] <> "\n";
+
    symStr = StringJoin[StringJoin[
       "sy keyword wolfSysWordOld ",
       Riffle[#, " "],
       "\n"
-   ] &/@ part@sym] <> "\n";
+   ] &/@ part@knownSymbols] <> "\n";
+
    funStr = StringJoin[StringJoin[
       "sy keyword wolfSysFuncOld ",
       Riffle[#, " "],
       " nextgroup=@wolfCluSysFunc\n"
-   ] &/@ part@fun];
+   ] &/@ part@knownFunctions];
 
    GetSyntax@FileNameJoin@{dir, "syntax", "wolf.vim"};
    SetSyntax@"~/.vim/syntax/wolf.vim";
 
-);
+];
 
 GetSyntax[file_] := Module[{keep = True},
    fileList = {};
